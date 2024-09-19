@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import LeftSideBar from './LeftSideBar';
-import TweetBox from './TweetBox';
-import RightSidebar from './RightSidebar';
-import Tweet from './Tweet';
-import SearchIcon from '@mui/icons-material/Search';
-import StarBorderPurple500Icon from '@mui/icons-material/StarBorderPurple500';
+import React, { useState } from "react";
+import LeftSideBar from "./LeftSideBar";
+import TweetBox from "./TweetBox";
+import RightSidebar from "./RightSidebar";
+import Tweet from "./Tweet";
+import SearchIcon from "@mui/icons-material/Search";
+import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
 
 const MainContent = () => {
+  const [activeTab, setActiveTab] = useState("Para ti");
+
   const initialTweets = [
     {
       id: 1,
       user: "Kevincito",
       handle: "KevinGOD",
-      avatarUrl: "https://pbs.twimg.com/profile_images/1734380777427582976/cIDzoFdT_400x400.jpg",
+      avatarUrl:
+        "https://pbs.twimg.com/profile_images/1734380777427582976/cIDzoFdT_400x400.jpg",
       content: "Este es mi primer tweet!",
-      time: "10:00 AM"
+      time: "10:00 AM",
     },
     {
       id: 2,
       user: "Donald Trumpas",
       handle: "JDonald",
-      avatarUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCxq9w8vgG8UVWAj43FSiv7gqQ2EvGuNzUSQ&s",
+      avatarUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCxq9w8vgG8UVWAj43FSiv7gqQ2EvGuNzUSQ&s",
       content: "Hola, mundo!",
-      time: "10:30 AM"
-    }
+      time: "10:30 AM",
+    },
   ];
 
   const [tweets, setTweets] = useState(initialTweets);
@@ -42,17 +46,38 @@ const MainContent = () => {
         <LeftSideBar />
       </div>
 
-      <div className="col-span-6 border-x border-gray-200 px-6">
-        <div className="flex justify-between items-center py-4">
-          <h2 className="font-bold text-2xl cursor-pointer hover:text-blue-500 transition-colors duration-200">
-            Para ti
-          </h2>
-          <h2 className="font-bold text-2xl cursor-pointer hover:text-blue-500 transition-colors duration-200">
-            Siguiendo
-          </h2>
-          <StarBorderPurple500Icon />
+      <div className="col-span-6 border-x border-gray-200 px-6 bg-white text-black">
+        <div className="col-span-6 border-x border-gray-200 px-6 bg-white text-black">
+          <div className="flex items-center py-2 border-b border-gray-200">
+            {/* Título "Para ti" */}
+            <h2
+              onClick={() => setActiveTab("Para ti")}
+              className={`flex-1 text-center font-bold text-base cursor-pointer transition-colors duration-200 ${
+                activeTab === "Para ti"
+                  ? "text-black border-b-4 border-blue-500"
+                  : "text-gray-500"
+              }`}
+            >
+              Para ti
+            </h2>
+
+            {/* Título "Siguiendo" */}
+            <h2
+              onClick={() => setActiveTab("Siguiendo")}
+              className={`flex-1 text-center font-bold text-base cursor-pointer transition-colors duration-200 ${
+                activeTab === "Siguiendo"
+                  ? "text-black border-b-4 border-blue-500"
+                  : "text-gray-500"
+              }`}
+            >
+              Siguiendo
+            </h2>
+
+            {/* Ícono de estrella */}
+            <StarBorderPurple500Icon className="ml-auto text-gray-500" />
+          </div>
         </div>
-        
+
         <TweetBox addTweet={addTweet} />
 
         <div>
@@ -68,7 +93,7 @@ const MainContent = () => {
           <input
             type="text"
             placeholder="Buscar en Twitter"
-            className="bg-gray-100 rounded-full py-2 px-12 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="bg-gray-100 text-black rounded-full py-2 px-12 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
         <RightSidebar />
