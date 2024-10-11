@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LeftSideBar from "./LeftSideBar";
 import TweetBox from "./TweetBox";
 import RightSidebar from "./RightSidebar";
@@ -8,36 +8,61 @@ import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
 
 const MainContent = () => {
   const [activeTab, setActiveTab] = useState("Para ti");
+  const [tweets, setTweets] = useState([]);
 
-  const initialTweets = [
-    {
-      id: 1,
-      user: "Kevincito",
-      handle: "KevinGOD",
-      avatarUrl:
-        "https://pbs.twimg.com/profile_images/1734380777427582976/cIDzoFdT_400x400.jpg",
-      content: "Este es mi primer tweet!",
-      time: "10:00 AM",
-    },
-    {
-      id: 2,
-      user: "Donald Trumpas",
-      handle: "JDonald",
-      avatarUrl:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCxq9w8vgG8UVWAj43FSiv7gqQ2EvGuNzUSQ&s",
-      content: "Hola, mundo!",
-      time: "10:30 AM",
-    },
-  ];
-
-  const [tweets, setTweets] = useState(initialTweets);
-
-  const addTweet = (newTweet) => {
-    setTweets([newTweet, ...tweets]);
+  // Cargar los tweets desde la API
+  const loadTweets = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/api/tweets");
+      const data = await response.json();
+      setTweets(data);
+    } catch (error) {
+      console.error("Error al cargar los tweets:", error);
+    }
   };
 
-  const deleteTweet = (id) => {
-    setTweets(tweets.filter((tweet) => tweet.id !== id));
+  useEffect(() => {
+    loadTweets();
+  }, []);
+
+  // Función para añadir un tweet
+  const addTweet = async (newTweet) => {
+    try {
+      const response = await fetch("http://localhost:3000/api/tweets", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTweet),
+      });
+
+      if (response.ok) {
+        const createdTweet = await response.json();
+        setTweets([createdTweet, ...tweets]); // Añadir el tweet al estado local
+        console.log("Tweet publicado correctamente:", createdTweet);
+      } else {
+        console.error("Error al publicar el tweet");
+      }
+    } catch (error) {
+      console.error("Error al conectar con la API para publicar el tweet:", error);
+    }
+  };
+
+  // Función para eliminar un tweet
+  const deleteTweet = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tweets/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setTweets(tweets.filter((tweet) => tweet.id !== id));
+        console.log("Tweet eliminado correctamente");
+      } else {
+        console.error("Error al eliminar el tweet");
+      }
+    } catch (error) {
+      console.error("Error al conectar con la API para eliminar el tweet:", error);
+    }
   };
 
   return (
@@ -49,7 +74,6 @@ const MainContent = () => {
       <div className="col-span-6 border-x border-gray-200 px-6 bg-white text-black">
         <div className="col-span-6 border-x border-gray-200 px-6 bg-white text-black">
           <div className="flex items-center py-2 border-b border-gray-200">
-            {/* Título "Para ti" */}
             <h2
               onClick={() => setActiveTab("Para ti")}
               className={`flex-1 text-center font-bold text-base cursor-pointer transition-colors duration-200 ${
@@ -61,7 +85,6 @@ const MainContent = () => {
               Para ti
             </h2>
 
-            {/* Título "Siguiendo" */}
             <h2
               onClick={() => setActiveTab("Siguiendo")}
               className={`flex-1 text-center font-bold text-base cursor-pointer transition-colors duration-200 ${
@@ -73,11 +96,11 @@ const MainContent = () => {
               Siguiendo
             </h2>
 
-            {/* Ícono de estrella */}
             <StarBorderPurple500Icon className="ml-auto text-gray-500" />
           </div>
         </div>
 
+        {/* Pasamos la función addTweet al TweetBox */}
         <TweetBox addTweet={addTweet} />
 
         <div>
