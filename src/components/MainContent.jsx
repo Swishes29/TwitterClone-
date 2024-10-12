@@ -5,10 +5,13 @@ import RightSidebar from "./RightSidebar";
 import Tweet from "./Tweet";
 import SearchIcon from "@mui/icons-material/Search";
 import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
+import ConfirmationModal from "./ConfirmationModal"; // Importar el modal
 
 const MainContent = () => {
   const [activeTab, setActiveTab] = useState("Para ti");
   const [tweets, setTweets] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para abrir/cerrar modal
+  const [tweetToDelete, setTweetToDelete] = useState(null); // Tweet a eliminar
 
   // Cargar los tweets desde la API
   const loadTweets = async () => {
@@ -48,14 +51,21 @@ const MainContent = () => {
     }
   };
 
-  // Función para eliminar un tweet
-  const deleteTweet = async (id) => {
+  // Función para abrir el modal de confirmación
+  const confirmDeleteTweet = (id) => {
+    setTweetToDelete(id); // Establecer el ID del tweet a eliminar
+    setIsModalOpen(true); // Abrir el modal
+  };
+
+  // Función para eliminar un tweet (después de confirmar en el modal)
+  const deleteTweet = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/tweets/${id}`, {
-        method: 'DELETE',
+      const response = await fetch(`http://localhost:3000/api/tweets/${tweetToDelete}`, {
+        method: "DELETE",
       });
+
       if (response.ok) {
-        setTweets(tweets.filter((tweet) => tweet.id !== id));
+        setTweets(tweets.filter((tweet) => tweet.id !== tweetToDelete)); // Filtrar el tweet eliminado
         console.log("Tweet eliminado correctamente");
       } else {
         console.error("Error al eliminar el tweet");
@@ -63,6 +73,9 @@ const MainContent = () => {
     } catch (error) {
       console.error("Error al conectar con la API para eliminar el tweet:", error);
     }
+
+    setIsModalOpen(false); // Cerrar el modal
+    setTweetToDelete(null); // Limpiar el tweet a eliminar
   };
 
   return (
@@ -105,7 +118,11 @@ const MainContent = () => {
 
         <div>
           {tweets.map((tweet) => (
-            <Tweet key={tweet.id} tweet={tweet} deleteTweet={deleteTweet} />
+            <Tweet
+              key={tweet.id}
+              tweet={tweet}
+              deleteTweet={() => confirmDeleteTweet(tweet.id)} // Abrir el modal en lugar de eliminar directamente
+            />
           ))}
         </div>
       </div>
@@ -121,6 +138,13 @@ const MainContent = () => {
         </div>
         <RightSidebar />
       </div>
+
+      {/* Modal de confirmación */}
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)} // Cerrar modal si se cancela
+        onConfirm={deleteTweet} // Eliminar tweet si se confirma
+      />
     </div>
   );
 };
