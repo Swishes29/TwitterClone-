@@ -5,13 +5,14 @@ import RightSidebar from "./RightSidebar";
 import Tweet from "./Tweet";
 import SearchIcon from "@mui/icons-material/Search";
 import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
-import ConfirmationModal from "./ConfirmationModal"; // Importar el modal
+import ConfirmationModal from "./ConfirmationModal"; 
+
 
 const MainContent = () => {
   const [activeTab, setActiveTab] = useState("Para ti");
   const [tweets, setTweets] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false); // Estado para abrir/cerrar modal
-  const [tweetToDelete, setTweetToDelete] = useState(null); // Tweet a eliminar
+  const [isModalOpen, setIsModalOpen] = useState(false); 
+  const [tweetToDelete, setTweetToDelete] = useState(null); 
 
   // Cargar los tweets desde la API
   const loadTweets = async () => {
@@ -51,13 +52,13 @@ const MainContent = () => {
     }
   };
 
-  // Función para abrir el modal de confirmación
+
   const confirmDeleteTweet = (id) => {
-    setTweetToDelete(id); // Establecer el ID del tweet a eliminar
+    setTweetToDelete(id); 
     setIsModalOpen(true); // Abrir el modal
   };
 
-  // Función para eliminar un tweet (después de confirmar en el modal)
+
   const deleteTweet = async () => {
     try {
       const response = await fetch(`http://localhost:3000/api/tweets/${tweetToDelete}`, {
@@ -74,8 +75,8 @@ const MainContent = () => {
       console.error("Error al conectar con la API para eliminar el tweet:", error);
     }
 
-    setIsModalOpen(false); // Cerrar el modal
-    setTweetToDelete(null); // Limpiar el tweet a eliminar
+    setIsModalOpen(false); 
+    setTweetToDelete(null); 
   };
 
   return (
@@ -121,7 +122,7 @@ const MainContent = () => {
             <Tweet
               key={tweet.id}
               tweet={tweet}
-              deleteTweet={() => confirmDeleteTweet(tweet.id)} // Abrir el modal en lugar de eliminar directamente
+              deleteTweet={() => confirmDeleteTweet(tweet.id)} 
             />
           ))}
         </div>
