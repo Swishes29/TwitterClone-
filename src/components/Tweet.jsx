@@ -1,7 +1,13 @@
 import React from 'react';
-import { ChatBubbleOvalLeftIcon, ArrowPathRoundedSquareIcon, HeartIcon, ArrowUpTrayIcon, TrashIcon } from '@heroicons/react/24/outline';
+import {
+  ChatBubbleOvalLeftIcon,
+  ArrowPathRoundedSquareIcon,
+  HeartIcon,
+  ArrowUpTrayIcon,
+  TrashIcon
+} from '@heroicons/react/24/outline';
 
-const Tweet = ({ tweet, deleteTweet }) => {
+const Tweet = ({ tweet, deleteTweet, onShare }) => {
   return (
     <div className="flex flex-col sm:flex-row border-b border-gray-200 py-4 hover:bg-gray-50 cursor-pointer px-4">
       <img
@@ -31,10 +37,16 @@ const Tweet = ({ tweet, deleteTweet }) => {
             <HeartIcon className="h-5 w-5" />
             <span className="text-sm">Like</span>
           </button>
-          <button className="flex items-center space-x-1 hover:text-blue-500">
+
+       
+          <button
+            onClick={onShare}
+            className="flex items-center space-x-1 hover:text-blue-500"
+          >
             <ArrowUpTrayIcon className="h-5 w-5" />
             <span className="text-sm">Share</span>
           </button>
+
           <button
             onClick={() => deleteTweet(tweet.id)}
             className="flex items-center space-x-1 hover:text-red-500"
