@@ -6,14 +6,16 @@ import Tweet from "./Tweet";
 import SearchIcon from "@mui/icons-material/Search";
 import StarBorderPurple500Icon from "@mui/icons-material/StarBorderPurple500";
 import ConfirmationModal from "./ConfirmationModal";
-import ShareTweetModal from "./ShareTweetModal"; // Nuevo nombre del componente modal
+import ShareTweetModal from "./ShareTweetModal";
 
 const MainContent = () => {
   const [activeTab, setActiveTab] = useState("Para ti");
   const [tweets, setTweets] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false); 
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false); // Estado para la nueva modal
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [tweetToDelete, setTweetToDelete] = useState(null); 
+  const [searchQuery, setSearchQuery] = useState("");  
+  const [filteredTweets, setFilteredTweets] = useState([]); 
 
   // Cargar los tweets desde la API
   const loadTweets = async () => {
@@ -21,6 +23,7 @@ const MainContent = () => {
       const response = await fetch("http://localhost:3000/api/tweets");
       const data = await response.json();
       setTweets(data);
+      setFilteredTweets(data); // Inicialmente muestra todos los tweets
     } catch (error) {
       console.error("Error al cargar los tweets:", error);
     }
@@ -29,6 +32,26 @@ const MainContent = () => {
   useEffect(() => {
     loadTweets();
   }, []);
+
+  // Función para realizar la búsqueda de tweets
+  const searchTweets = async (query) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/tweets/search?query=${query}`);
+      const data = await response.json();
+      setFilteredTweets(data); 
+    } catch (error) {
+      console.error("Error al buscar tweets:", error);
+    }
+  };
+
+ 
+  useEffect(() => {
+    if (searchQuery) {
+      searchTweets(searchQuery);
+    } else {
+      setFilteredTweets(tweets); 
+    }
+  }, [searchQuery, tweets]);
 
   // Función para añadir un tweet
   const addTweet = async (newTweet) => {
@@ -43,7 +66,7 @@ const MainContent = () => {
 
       if (response.ok) {
         const createdTweet = await response.json();
-        setTweets([createdTweet, ...tweets]); // Añadir el tweet al estado local
+        setTweets([createdTweet, ...tweets]); 
         console.log("Tweet publicado correctamente:", createdTweet);
       } else {
         console.error("Error al publicar el tweet");
@@ -55,7 +78,7 @@ const MainContent = () => {
 
   // Función para confirmar la eliminación de un tweet
   const confirmDeleteTweet = (id) => {
-    setTweetToDelete(id); 
+    setTweetToDelete(id);
     setIsModalOpen(true); 
   };
 
@@ -121,12 +144,12 @@ const MainContent = () => {
 
         {/* Lista de tweets */}
         <div>
-          {tweets.map((tweet) => (
+          {filteredTweets.map((tweet) => (
             <Tweet
               key={tweet.id}
               tweet={tweet}
               deleteTweet={() => confirmDeleteTweet(tweet.id)} 
-              onShare={() => setIsShareModalOpen(true)} // Abrimos la modal de compartir
+              onShare={() => setIsShareModalOpen(true)}
             />
           ))}
         </div>
@@ -138,6 +161,8 @@ const MainContent = () => {
           <SearchIcon className="absolute left-4 top-2 text-gray-400" />
           <input
             type="text"
+            value={searchQuery}  // Vincula el estado searchQuery al input
+            onChange={(e) => setSearchQuery(e.target.value)}  // Actualiza el valor de búsqueda
             placeholder="Buscar en Twitter"
             className="bg-gray-100 text-black rounded-full py-2 px-12 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />

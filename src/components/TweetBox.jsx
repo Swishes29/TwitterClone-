@@ -9,19 +9,22 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 const TweetBox = ({ addTweet }) => {
   const [tweetContent, setTweetContent] = useState('');
   const [charCount, setCharCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false); // Añadido para el indicador de carga
 
   const handleTweet = () => {
     if (tweetContent.trim()) {
+      setIsLoading(true); // Activa el estado de carga
       addTweet({
         id: Date.now(),
         user: 'Kevincito',
-        handle: '@KevinGOD',
+        handle: 'KevinGOD',
         avatarUrl: 'https://pbs.twimg.com/profile_images/1734380777427582976/cIDzoFdT_400x400.jpg',
         content: tweetContent,
-        time: new Date().toLocaleTimeString(),
+        time: new Date().toISOString(), 
       });
       setTweetContent('');
       setCharCount(0);
+      setIsLoading(false); 
     }
   };
 
@@ -31,7 +34,7 @@ const TweetBox = ({ addTweet }) => {
   };
 
   return (
-    <div className="bg-white text-white border border-white-800 rounded-lg p-4 shadow-md">
+    <div className="bg-white border border-gray-300 rounded-lg p-4 shadow-md">
       <div className="flex items-start space-x-3">
         <img
           src="https://pbs.twimg.com/profile_images/1734380777427582976/cIDzoFdT_400x400.jpg"
@@ -44,7 +47,7 @@ const TweetBox = ({ addTweet }) => {
             maxLength={280}
             value={tweetContent}
             onChange={handleChange}
-            className="w-full bg-white text-black rounded-lg p-2 mb-2 border border-gray-700 resize-none"
+            className="w-full bg-white text-black rounded-lg p-2 mb-2 border border-gray-300 resize-none"
             rows="2"
           />
           <div className="flex justify-between items-center mt-2">
@@ -61,9 +64,10 @@ const TweetBox = ({ addTweet }) => {
             </p>
             <button
               onClick={handleTweet}
-              className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600"
+              disabled={isLoading}
+              className="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 disabled:opacity-50"
             >
-              Postear
+              {isLoading ? "Cargando..." : "Postear"}
             </button>
           </div>
         </div>
