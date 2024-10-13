@@ -161,7 +161,7 @@ const MainContent = () => {
           <SearchIcon className="absolute left-4 top-2 text-gray-400" />
           <input
             type="text"
-            value={searchQuery}  // Vincula el estado searchQuery al input
+            value={searchQuery}  
             onChange={(e) => setSearchQuery(e.target.value)}  // Actualiza el valor de búsqueda
             placeholder="Buscar en Twitter"
             className="bg-gray-100 text-black rounded-full py-2 px-12 w-full text-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

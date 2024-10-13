@@ -6,7 +6,7 @@ const SearchTweets = ({ onSearch }) => {
 
   const handleSearch = (e) => {
     setSearchQuery(e.target.value);
-    onSearch(e.target.value); // Pasamos la búsqueda al componente padre
+    onSearch(e.target.value); 
   };
 
   return (

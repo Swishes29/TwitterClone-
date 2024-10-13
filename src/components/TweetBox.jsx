@@ -13,7 +13,7 @@ const TweetBox = ({ addTweet }) => {
 
   const handleTweet = () => {
     if (tweetContent.trim()) {
-      setIsLoading(true); // Activa el estado de carga
+      setIsLoading(true); 
       addTweet({
         id: Date.now(),
         user: 'Kevincito',
